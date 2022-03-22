@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>my hangman</title>
+    <link href="http://fonts.cdnfonts.com/css/grind-zero" rel="stylesheet">
+    <!-- cool font for the game -->
+
+    <style>
+        body {
+            font-family: 'Grind Zero', sans-serif;
+            font-size: x-large;
+            display: flex;
+            justify-content: center;
+        }
+        /*game to be in the center of the page and cool font*/
+        
+        .btn {
+            background-color: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .btn:hover {
+            background-color: gray;
+        }
+        /* style for the button */
+    </style>
+
+    <script>
+        let arrWords = ["apple", "door", "birthday", "bike", "pants", "balloon", "fire", "computer", "bird",
+                "doctor", "happy", "shark", "homework", "bird", "clock", "lollipop", "basketball", "flower", "clown",
+                "mountain", "moon", "paint", "rainbow", "cold", "desk", "bike", "spider", "school", "mom", "king", "winter",
+            ]
+            //array with words
+
+        let randomWord = arrWords[Math.floor(Math.random() * arrWords.length)]; //randomly selects a word from the array
+        console.log(randomWord)
+            // How many guesses does the user have
+        let guessesCount = 10
+            //array that will first hold asterisks as the length of the word and change when the user enters correct letters  
+        let answerArray = [];
+        //A variable that will contain if the user wins
+        let haveWinner;
+
+
+        function init() {
+
+            for (let i = 0; i < randomWord.length; i++) {
+                answerArray[i] = "*";
+
+            }
+
+            msgForUser(answerArray, guessesCount)
+        }
+
+        //A message that will show the user how many attempts are left and the word in asterisks
+        function msgForUser(answerArray, guessesCount) {
+            document.querySelector("#answer").innerHTML = "the word is:   " + answerArray.join(" ");
+            document.querySelector("#count").innerHTML = "The number of guesses you have: " + guessesCount;
+        }
+        //A function that will check if the user has won
+        function checkWinner(haveWinner) {
+            if (haveWinner) {
+                alert("good job you win!! the word is: " + randomWord + "\n for a new game enter OK");
+                location.reload();
+            }
+        }
+
+        //A function that will check if the number of guesses is over
+        function checkLoss(guessesCount) {
+            if (guessesCount === 0) { // if the number of guesses is equal to 0
+                alert("game over!!\nThe number of guesses you have: 0\nfor a new game enter ok");
+                location.reload();
+            }
+        }
+
+        function hangedMan() {
+            //A variable that will receive the letter the user typed and convert it to a lowercase letter
+            let letter = document.querySelector("#letter").value.toLowerCase();
+            //A variable that will check if the user typed a correct letter
+            let correctLetter = false;
+            // A variable that will check for numbers and symbols and space
+            let checkNumberSymbol = new RegExp("[0-9|\\s+/~^:,;?!&%$@#*+-]");
+
+
+            //check if the user entered one letter and also check if the user did not enter a number or symbol
+            if (letter.length === 1 && checkNumberSymbol.test(letter) === false) {
+
+                // A loop that runs on the letters in the word and if the letter the user typed is equal to it,
+                //  it replaces the asterisk with a letter in the array of the answer
+                for (let i = 0; i < randomWord.length; i++) {
+                    if (randomWord[i] === letter) {
+                        answerArray[i] = letter;
+                        //if the user typed a correct letter- correctLetter will be true
+                        correctLetter = true;
+                        //if there is not asterisk in the array, to check if the user has won
+                        haveWinner = !answerArray.includes("*");
+
+                    }
+                }
+                //if the letter entered by the user is incorrect,the number of guesses is small in one
+                if (!correctLetter) {
+                    guessesCount--;
+                }
+                //Check if the player is win
+                checkWinner(haveWinner);
+
+                //Check if the player is loss
+                checkLoss(guessesCount)
+
+                msgForUser(answerArray, guessesCount)
+
+            } else {
+                alert("You must enter one letter at a time |OR| you entered number / symbol");
+            }
+
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div>
+        <h1>hang man</h1>
+        <h2>what your guess?</h2>
+        <h4>enter one letter at a time</h4>
+        <h5>not includes number or symbol</h5>
+        <input id="letter" type="text">
+        <input type="button" value="guess" class="btn" onclick="hangedMan()" />
+        <p id="answer"> </p>
+        <p id="count"> </p>
+        <p></p>
+    </div>
+</body>
+
+</html>
